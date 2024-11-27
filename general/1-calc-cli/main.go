@@ -1,4 +1,4 @@
-package calcCli
+package main
 
 import "fmt"
 
