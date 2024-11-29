@@ -62,11 +62,11 @@ func (g *Grande) Price() float32 {
 func factory(tipo string, custo float32) (IProduct, error) {
 	switch tipo {
 	case ("pequeno"):
-		return &Pequeno{custo}, nil
+		return &Pequeno{Product{custo}}, nil
 	case ("medio"):
-		return &Medio{custo}, nil
+		return &Medio{Product{custo}}, nil
 	case ("grande"):
-		return &Grande{custo}, nil
+		return &Grande{Product{custo}}, nil
 	}
 	return &Pequeno{}, errors.New("Tipo não encontrado")
 
