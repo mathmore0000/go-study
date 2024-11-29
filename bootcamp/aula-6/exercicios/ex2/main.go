@@ -28,16 +28,23 @@ type IProduct interface {
 	Price() float32
 }
 
-type Pequeno struct {
+type Product struct {
 	custo float32
+}
+
+type Pequeno struct {
+	Product
+	// custo float32
 }
 
 type Medio struct {
-	custo float32
+	Product
+	// custo float32
 }
 
 type Grande struct {
-	custo float32
+	Product
+	// custo float32
 }
 
 func (p *Pequeno) Price() float32 {
