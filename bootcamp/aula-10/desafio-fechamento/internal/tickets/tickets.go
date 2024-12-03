@@ -18,10 +18,10 @@ type Ticket struct {
 	Cost    float32
 }
 
-var Tickets []Ticket
+var Tickets []*Ticket
 
-var TicketsByCountry map[string][]Ticket = map[string][]Ticket{}
-var TicketsByTimeOfDay map[string][]Ticket = map[string][]Ticket{}
+var TicketsByCountry map[string][]*Ticket = map[string][]*Ticket{}
+var TicketsByTimeOfDay map[string][]*Ticket = map[string][]*Ticket{}
 
 func createTicket(name string, email string, country string, time time.Time, cost float32) (ticket *Ticket) {
 	return &Ticket{name, email, country, time, cost}
@@ -44,9 +44,9 @@ func InitializeTickets(ticketsCsvFilePath string) {
 		newTicket := createTicket(record[1], record[2], record[3], time.Date(2024, 12, 02, newTicketHour, newTicketMinute, 0, 0, time.Local), float32(newTicketCost))
 		newTicketTimeOfDay := getTimeOfDayByTime(newTicket.Time)
 
-		Tickets = append(Tickets, *newTicket)
-		TicketsByCountry[newTicket.Country] = append(TicketsByCountry[newTicket.Country], *newTicket)
-		TicketsByTimeOfDay[newTicketTimeOfDay] = append(TicketsByTimeOfDay[newTicketTimeOfDay], *newTicket)
+		Tickets = append(Tickets, newTicket)
+		TicketsByCountry[newTicket.Country] = append(TicketsByCountry[newTicket.Country], newTicket)
+		TicketsByTimeOfDay[newTicketTimeOfDay] = append(TicketsByTimeOfDay[newTicketTimeOfDay], newTicket)
 	}
 }
 
