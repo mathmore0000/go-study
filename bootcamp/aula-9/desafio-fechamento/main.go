@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"time"
@@ -51,9 +52,12 @@ func main() {
 }
 
 func doMainInitialization() {
-	args := os.Args
-	if len(args) == 1 {
-		panic("must pass csv file path as the first parameter")
+	flag.StringVar(&csvFilePath, "csv", "", "Path to the CSV file")
+	flag.Parse()
+
+	if csvFilePath == "" {
+		fmt.Println("Error: You must provide the CSV file path using the -csv flag.")
+		flag.Usage()
+		os.Exit(1)
 	}
-	csvFilePath = args[1]
 }
