@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/bootcamp-go/desafio-go-bases/internal/tickets"
@@ -25,9 +26,10 @@ import (
 		Crie testes de unidade para cada um dos requisitos acima, com um mínimo de 2 casos por requisito:
 */
 
-var csvFilePath string = "tickets.csv"
+var csvFilePath string
 
 func main() {
+	doMainInitialization()
 	tickets.InitializeTickets(csvFilePath)
 	destination := "Brazil"
 	totalTicketsByDestination, err := tickets.GetTotalTicketsByDestination(destination)
@@ -46,4 +48,12 @@ func main() {
 	} else {
 		fmt.Printf("The choice for %v as a destination represents %v%% of the tickets\n", destination, percentageOfTicketsByDestination)
 	}
+}
+
+func doMainInitialization() {
+	args := os.Args
+	if len(args) == 1 {
+		panic("must pass csv file path as the first parameter")
+	}
+	csvFilePath = args[1]
 }
