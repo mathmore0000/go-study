@@ -76,7 +76,7 @@ func main() {
 			return
 		}
 
-		product := getProducts(float32(priceGt))
+		product := getProductsFiltered(float32(priceGt))
 
 		productsMarsharled, err := json.Marshal(product)
 		if err != nil {
@@ -92,7 +92,7 @@ func main() {
 	}
 }
 
-func getProducts(priceGt float32) []*Product {
+func getProductsFiltered(priceGt float32) []*Product {
 	var ps []*Product = []*Product{}
 
 	for _, product := range products {
