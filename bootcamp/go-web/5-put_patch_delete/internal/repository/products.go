@@ -77,13 +77,12 @@ func (r *ProductRepository) Create(product *Product) error {
 	return nil
 }
 
-func (r *ProductRepository) Put(product *Product) (jaExistia bool, err error) {
+func (r *ProductRepository) Put(product *Product) (alreadyExisted bool, err error) {
 	// Verificar se o code_value já existe
 	_, ok := r.products[product.ID]
-	fmt.Println(jaExistia)
 
 	if ok {
-		jaExistia = true
+		alreadyExisted = true
 		r.products[product.ID] = product
 	} else {
 		product.ID = r.nextID
