@@ -102,6 +102,7 @@ func (r *ProductRepository) Update(product *Product) error {
 }
 
 func (r *ProductRepository) Patch(product *Product) error {
+	r.products[product.ID] = product
 	return nil
 }
 
