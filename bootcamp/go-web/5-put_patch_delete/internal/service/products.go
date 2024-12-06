@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"main/internal/repository"
 	"regexp"
 	"strconv"
@@ -36,14 +37,32 @@ func (s *ProductService) Delete(product *repository.Product) error {
 }
 
 func (s *ProductService) Create(product *repository.Product) error {
-	// Validação dos campos
-	if err := validateProduct(product); err != nil {
+	if err := s.validateProduct(product); err != nil {
 		return err
 	}
 	return s.repo.Create(product)
 }
 
-func validateProduct(product *repository.Product) error {
+func (s *ProductService) Patch(product *repository.Product) error {
+	// Validar o produto atualizado
+	if err := s.validateProduct(product); err != nil {
+		return err
+	}
+	// Atualizar o produto no repositório
+	fmt.Println("atualizado..")
+	return s.repo.Update(product)
+}
+
+func (s *ProductService) Put(product *repository.Product) (bool, error) {
+	// Validação dos campos
+	if err := s.validateProduct(product); err != nil {
+		return false, err
+	}
+	fmt.Println("atualizado..")
+	return s.repo.Put(product)
+}
+
+func (s *ProductService) validateProduct(product *repository.Product) error {
 	if product.Name == "" {
 		return errors.New("O campo 'name' não pode ser vazio")
 	}
@@ -52,6 +71,9 @@ func validateProduct(product *repository.Product) error {
 	}
 	if product.CodeValue == "" {
 		return errors.New("O campo 'code_value' não pode ser vazio")
+	}
+	if s.repo.ExistsByCodeValue(product) {
+		return errors.New("O campo 'code_value' já existe")
 	}
 	if product.Expiration == "" {
 		return errors.New("O campo 'expiration' não pode ser vazio")

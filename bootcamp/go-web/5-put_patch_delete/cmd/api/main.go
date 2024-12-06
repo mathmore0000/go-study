@@ -26,6 +26,8 @@ func main() {
 	rt.Route("/products", func(r chi.Router) {
 		r.Post("/", productHandler.CreateProduct)
 		r.Delete("/{id}", productHandler.DeleteProduct)
+		r.Put("/", productHandler.PutProduct)
+		r.Patch("/{id}", productHandler.PatchProduct)
 		r.Get("/", productHandler.ListAllProducts)
 		r.Get("/{id}", productHandler.GetProductById)
 		r.Get("/search", productHandler.GetProductSearch)

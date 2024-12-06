@@ -60,19 +60,52 @@ func (r *ProductRepository) Delete(product *Product) error {
 	return nil
 }
 
-func (r *ProductRepository) Create(product *Product) error {
-	// Verificar se o code_value já existe
+func (r *ProductRepository) ExistsByCodeValue(product *Product) bool {
 	for _, p := range r.products {
-		if p.CodeValue == product.CodeValue {
-			return fmt.Errorf("Product with code_value '%s' already exists", product.CodeValue)
+		if p.ID != product.ID && p.CodeValue == product.CodeValue {
+			return true
 		}
 	}
+	return false
+}
 
+func (r *ProductRepository) Create(product *Product) error {
+	// Verificar se o code_value já existe
 	product.ID = r.nextID
 	r.nextID++
 	r.products[product.ID] = product
 	return nil
 }
+
+func (r *ProductRepository) Put(product *Product) (jaExistia bool, err error) {
+	// Verificar se o code_value já existe
+	_, ok := r.products[product.ID]
+	fmt.Println(jaExistia)
+
+	if ok {
+		jaExistia = true
+		r.products[product.ID] = product
+	} else {
+		product.ID = r.nextID
+		r.nextID++
+		r.products[product.ID] = product
+	}
+
+	return
+}
+
+func (r *ProductRepository) Update(product *Product) error {
+
+	r.products[product.ID] = product
+
+	return nil
+}
+
+func (r *ProductRepository) Patch(product *Product) error {
+	return nil
+}
+
+// func (r *ProductRepository) Save(product *Product) error {}
 
 func (r *ProductRepository) loadProducts(jsonPath string) {
 	// Open the JSON file
