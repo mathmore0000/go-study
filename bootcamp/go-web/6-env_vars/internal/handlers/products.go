@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"main/internal/repository"
 	"main/internal/service"
 	"net/http"
@@ -59,6 +60,7 @@ func NewProductHandler(service *service.ProductService) *ProductHandler {
 func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	fmt.Println(os.Getenv("TOKEN"))
 	if os.Getenv("TOKEN") == "" || r.Header.Get("TOKEN") != os.Getenv("TOKEN") {
 		json.NewEncoder(w).Encode(errInvalidToken)
 		return

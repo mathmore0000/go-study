@@ -169,6 +169,6 @@ func (r *ProductRepository) loadProducts() {
 		os.Exit(1)
 	}
 
-	r.nextID = len(r.products) + 1
 	r.products = products
+	r.nextID = len(r.products) + 1
 }
