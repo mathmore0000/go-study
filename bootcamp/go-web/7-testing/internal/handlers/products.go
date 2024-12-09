@@ -253,7 +253,6 @@ func (h *ProductHandler) ListAllProducts(w http.ResponseWriter, r *http.Request)
 func (h *ProductHandler) GetProductById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	idStr := chi.URLParam(r, "id")
-	fmt.Println("idStr:", idStr) // Deve imprimir o ID correto
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
