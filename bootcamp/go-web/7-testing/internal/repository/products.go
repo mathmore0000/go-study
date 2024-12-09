@@ -20,14 +20,14 @@ type Product struct {
 type ProductRepository struct {
 	Products map[int]*Product
 	NextID   int
-	jsonPath string
+	JsonPath string
 }
 
-func NewProductRepository(jsonPath string) *ProductRepository {
+func NewProductRepository(JsonPath string) *ProductRepository {
 	repo := &ProductRepository{
 		Products: make(map[int]*Product),
 		NextID:   1,
-		jsonPath: jsonPath,
+		JsonPath: JsonPath,
 	}
 	repo.loadProducts()
 	return repo
@@ -127,7 +127,7 @@ func (r *ProductRepository) Patch(product *Product) error {
 
 func (r *ProductRepository) writeToProductsToJson() error {
 	// Abrir o arquivo JSON para escrita (criando ou truncando o arquivo)
-	jsonFile, err := os.Create(r.jsonPath)
+	jsonFile, err := os.Create(r.JsonPath)
 	if err != nil {
 		return fmt.Errorf("Erro ao abrir arquivo para escrita: %v", err)
 	}
@@ -146,7 +146,7 @@ func (r *ProductRepository) writeToProductsToJson() error {
 
 func (r *ProductRepository) loadProducts() {
 	// Open the JSON file
-	jsonFile, err := os.Open(r.jsonPath)
+	jsonFile, err := os.Open(r.JsonPath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error opening file: %v\n", err)
 		os.Exit(1)

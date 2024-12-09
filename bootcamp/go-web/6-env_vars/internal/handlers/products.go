@@ -62,12 +62,14 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(os.Getenv("TOKEN"))
 	if os.Getenv("TOKEN") == "" || r.Header.Get("TOKEN") != os.Getenv("TOKEN") {
+		w.WriteHeader(errInvalidToken.Status)
 		json.NewEncoder(w).Encode(errInvalidToken)
 		return
 
 	}
 	var productRequest ProductRequest
 	if err := json.NewDecoder(r.Body).Decode(&productRequest); err != nil {
+		w.WriteHeader(errDecodeJson.Status)
 		json.NewEncoder(w).Encode(errDecodeJson)
 		return
 	}
@@ -94,12 +96,14 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 func (h *ProductHandler) PutProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if os.Getenv("TOKEN") == "" || r.Header.Get("TOKEN") != os.Getenv("TOKEN") {
+		w.WriteHeader(errInvalidToken.Status)
 		json.NewEncoder(w).Encode(errInvalidToken)
 		return
 
 	}
 	var productRequest ProductRequest
 	if err := json.NewDecoder(r.Body).Decode(&productRequest); err != nil {
+		w.WriteHeader(errDecodeJson.Status)
 		json.NewEncoder(w).Encode(errDecodeJson)
 		return
 	}
@@ -134,6 +138,7 @@ func (h *ProductHandler) PutProduct(w http.ResponseWriter, r *http.Request) {
 func (h *ProductHandler) PatchProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if os.Getenv("TOKEN") == "" || r.Header.Get("TOKEN") != os.Getenv("TOKEN") {
+		w.WriteHeader(errInvalidToken.Status)
 		json.NewEncoder(w).Encode(errInvalidToken)
 		return
 
@@ -150,6 +155,7 @@ func (h *ProductHandler) PatchProduct(w http.ResponseWriter, r *http.Request) {
 	// Obter o produto existente
 	product, ok := h.service.GetById(id)
 	if !ok {
+		w.WriteHeader(errProdNotFound.Status)
 		json.NewEncoder(w).Encode(errProdNotFound)
 		return
 	}
@@ -157,6 +163,7 @@ func (h *ProductHandler) PatchProduct(w http.ResponseWriter, r *http.Request) {
 	// Decodificar o corpo da requisição para ProductPatchRequest
 	var productPatch ProductPatchRequest
 	if err := json.NewDecoder(r.Body).Decode(&productPatch); err != nil {
+		w.WriteHeader(errDecodeJson.Status)
 		json.NewEncoder(w).Encode(errDecodeJson)
 		return
 	}
@@ -205,6 +212,7 @@ func (h *ProductHandler) PatchProduct(w http.ResponseWriter, r *http.Request) {
 func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if os.Getenv("TOKEN") == "" || r.Header.Get("TOKEN") != os.Getenv("TOKEN") {
+		w.WriteHeader(errInvalidToken.Status)
 		json.NewEncoder(w).Encode(errInvalidToken)
 		return
 	}
@@ -218,6 +226,7 @@ func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 
 	product, ok := h.service.GetById(id)
 	if !ok {
+		w.WriteHeader(errProdNotFound.Status)
 		json.NewEncoder(w).Encode(errProdNotFound)
 		return
 	}
@@ -252,6 +261,7 @@ func (h *ProductHandler) GetProductById(w http.ResponseWriter, r *http.Request) 
 
 	product, ok := h.service.GetById(id)
 	if !ok {
+		w.WriteHeader(errProdNotFound.Status)
 		json.NewEncoder(w).Encode(errProdNotFound)
 		return
 	}

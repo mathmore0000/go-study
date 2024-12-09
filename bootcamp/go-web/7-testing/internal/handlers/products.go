@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"main/internal/repository"
 	"main/internal/service"
 	"net/http"
@@ -53,6 +52,10 @@ var errInvalidToken ProductResponse = ProductResponse{
 	Message: "Token inválido", Status: http.StatusUnauthorized,
 }
 
+var errInvalidId ProductResponse = ProductResponse{
+	Message: "id inválido", Status: http.StatusBadRequest,
+}
+
 func NewProductHandler(service *service.ProductService) *ProductHandler {
 	return &ProductHandler{service: service}
 }
@@ -60,7 +63,6 @@ func NewProductHandler(service *service.ProductService) *ProductHandler {
 func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	fmt.Println(os.Getenv("TOKEN"))
 	if os.Getenv("TOKEN") == "" || r.Header.Get("TOKEN") != os.Getenv("TOKEN") {
 		w.WriteHeader(errInvalidToken.Status)
 		json.NewEncoder(w).Encode(errInvalidToken)
@@ -84,6 +86,7 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.service.Create(product); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(ProductResponse{Message: err.Error(), Status: http.StatusBadRequest})
 		return
 	}
@@ -148,7 +151,8 @@ func (h *ProductHandler) PatchProduct(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		json.NewEncoder(w).Encode(ProductResponse{Message: "ID inválido", Status: http.StatusBadRequest})
+		w.WriteHeader(errInvalidId.Status)
+		json.NewEncoder(w).Encode(errInvalidId)
 		return
 	}
 
@@ -220,7 +224,8 @@ func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		json.NewEncoder(w).Encode(ProductResponse{Message: "id inválido", Status: http.StatusBadRequest})
+		w.WriteHeader(errInvalidId.Status)
+		json.NewEncoder(w).Encode(errInvalidId)
 		return
 	}
 
@@ -239,6 +244,7 @@ func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(ProductResponse{Message: "Produto deletado", Status: http.StatusOK})
 }
 
 func (h *ProductHandler) ListAllProducts(w http.ResponseWriter, r *http.Request) {
@@ -255,8 +261,8 @@ func (h *ProductHandler) GetProductById(w http.ResponseWriter, r *http.Request) 
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(ProductResponse{Message: "id inválido", Status: http.StatusBadRequest})
+		w.WriteHeader(errInvalidId.Status)
+		json.NewEncoder(w).Encode(errInvalidId)
 		return
 	}
 
@@ -279,13 +285,14 @@ func (h *ProductHandler) GetProductSearch(w http.ResponseWriter, r *http.Request
 	var err error
 	priceGt, err = strconv.ParseFloat(priceGtStr, 32)
 	if priceGtStr != "" && err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(ProductResponse{Message: "priceGt inválido", Status: http.StatusBadRequest})
 		return
 	}
 
 	products := h.service.GetProductsFiltered(float32(priceGt))
 
-	status := http.StatusCreated
+	status := http.StatusOK
 	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(ProductsResponse{Data: products, Status: status})
 }

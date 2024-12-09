@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"main/internal/repository"
 	"regexp"
 	"strconv"
@@ -48,8 +47,6 @@ func (s *ProductService) Patch(product *repository.Product) error {
 	if err := s.validateProduct(product); err != nil {
 		return err
 	}
-	// Atualizar o produto no repositório
-	fmt.Println("atualizado..")
 	return s.repo.Update(product)
 }
 
@@ -58,7 +55,6 @@ func (s *ProductService) Put(product *repository.Product) (bool, error) {
 	if err := s.validateProduct(product); err != nil {
 		return false, err
 	}
-	fmt.Println("atualizado..")
 	return s.repo.Put(product)
 }
 
