@@ -67,6 +67,30 @@ func TestServiceTicketDefault_GetTotalAmountTicketsByDestinationCountry(t *testi
 		}
 
 		rp.FuncGetTicketsCountByDestinationCountry = func(country string) int {
+			return 10
+		}
+
+		// - service
+		sv := service.NewServiceTicketDefault(rp)
+
+		// act
+		percentage, err := sv.GetPercentageTicketsByDestinationCountry("Brazil")
+
+		// assert
+		var expectedPercentage float32 = 11.0
+		require.NoError(t, err, "should not return an error")
+		require.NotEqual(t, expectedPercentage, percentage)
+	})
+	t.Run("fail to get percentage of tickets by destination country", func(t *testing.T) {
+		// arrange
+		// - repository: mock
+		rp := repository.NewRepositoryTicketMock()
+		// - repository: set-up
+		rp.FuncGetAllCount = func() int {
+			return 100
+		}
+
+		rp.FuncGetTicketsCountByDestinationCountry = func(country string) int {
 			return 0
 		}
 
